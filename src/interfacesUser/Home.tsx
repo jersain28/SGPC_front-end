@@ -1,7 +1,7 @@
 import React from 'react';
+import panteon from '../assets/panteon.jpg';
+import Navbar from '../Navbar';
 
-// Definimos una "Interface" para las props si fuera necesario, 
-// o para los datos que manejes.
 interface StatBadgeProps {
   label: string;
   color: string;
@@ -17,17 +17,9 @@ const StatBadge: React.FC<StatBadgeProps> = ({ label, color }) => (
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-gray-50">
-      
-      {/* Header */}
-      <nav className="bg-white py-6 px-10 shadow-sm">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-[#C0392B] font-bold text-xl uppercase tracking-wider">
-            Comunidad de Nativitas
-          </h2>
-        </div>
-      </nav>
+      <Navbar showAccessButtons={true} />
 
-      {/* Main Content */}
+      {/* --- Main Content --- */}
       <main className="flex-grow flex items-center px-10 py-12">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           
@@ -47,10 +39,6 @@ const Home: React.FC = () => {
               Facilitamos los trámites administrativos con respeto y transparencia.
             </p>
 
-            <button className="bg-[#C0392B] hover:bg-[#A93226] text-white font-bold py-4 px-12 rounded-xl text-lg transition-all transform active:scale-95 shadow-lg">
-              Iniciar Trámite
-            </button>
-
             <div className="flex gap-8 pt-4">
               <StatBadge label="Sistema Activo 24/7" color="bg-green-500" />
               <StatBadge label="Atención Ciudadana" color="bg-blue-400" />
@@ -61,8 +49,8 @@ const Home: React.FC = () => {
           <div className="relative">
             <div className="rounded-[50px] overflow-hidden shadow-2xl border-[12px] border-white ring-1 ring-gray-200">
               <img 
-                src="https://via.placeholder.com/800x600" 
-                alt="Presidencia de Comunidad"
+                src={panteon} 
+                alt="Panteon de Comunidad"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -70,17 +58,14 @@ const Home: React.FC = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#C0392B] text-white py-8 px-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-4 text-xs">
-          <div>
-            <p>© 2024 Comunidad Nativitas. Todos los derechos reservados.</p>
-            <p className="opacity-70">Gobierno Municipal – Administración 2024-2027</p>
-          </div>
-          <div className="flex gap-6 font-bold">
-            <button className="hover:opacity-80">Aviso de Privacidad</button>
-            <button className="hover:opacity-80">Términos y Condiciones</button>
-            <button className="hover:opacity-80">Soporte</button>
+      {/* --- Footer --- */}
+      <footer className="bg-[#C0392B] text-white py-6 px-10 text-[10px] mt-auto">
+        <div className="max-w-6xl mx-auto flex justify-between items-center opacity-90">
+          <p>2024 Comunidad Nativitas. Todos los derechos reservados.<br/>Gobierno Municipal – Administración 2024–2027</p>
+          <div className="flex gap-8 font-bold">
+            <button className="hover:underline">Aviso de Privacidad</button>
+            <button className="hover:underline">Términos y Condiciones</button>
+            <button className="hover:underline">Soporte</button>
           </div>
         </div>
       </footer>

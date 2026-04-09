@@ -1,4 +1,5 @@
 import React from 'react';
+import panteon from '../assets/panteon.jpg';
 
 const HomeAdmin: React.FC = () => {
   return (
@@ -59,25 +60,22 @@ const HomeAdmin: React.FC = () => {
         <div className="relative w-full md:w-1/2 max-w-lg">
           <div className="overflow-hidden rounded-3xl shadow-2xl transform md:rotate-1">
              <img 
-              src="/path-to-your-image.jpg" 
-              alt="Presidencia de Comunidad" 
+              src={panteon} 
+              alt="Panteon de Comunidad" 
               className="w-full h-auto object-cover"
             />
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#C0392B] text-white py-8 px-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-4 text-xs">
-          <div>
-            <p>© 2024 Comunidad Nativitas. Todos los derechos reservados.</p>
-            <p className="opacity-70">Gobierno Municipal – Administración 2024-2027</p>
-          </div>
-          <div className="flex gap-6 font-bold">
-            <button className="hover:opacity-80">Aviso de Privacidad</button>
-            <button className="hover:opacity-80">Términos y Condiciones</button>
-            <button className="hover:opacity-80">Soporte</button>
+    {/* Footer */}
+      <footer className="bg-[#C0392B] text-white py-6 px-10 text-[10px] mt-auto">
+        <div className="max-w-6xl mx-auto flex justify-between items-center opacity-90">
+          <p>2024 Comunidad Nativitas. Todos los derechos reservados.<br/>Gobierno Municipal – Administración 2024–2027</p>
+          <div className="flex gap-8 font-bold">
+            <button>Aviso de Privacidad</button>
+            <button>Términos y Condiciones</button>
+            <button>Soporte</button>
           </div>
         </div>
       </footer>
