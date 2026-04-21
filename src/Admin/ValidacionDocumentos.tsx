@@ -1,12 +1,6 @@
-import { ArrowLeft, FileText } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { ArrowLeft, CheckCircle, FileText, XCircle } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-// 1. Tipados corregidos para coincidir con el Serializer de Django
-interface DocumentoRelacionado {
-  tipo_documento: string;
-  archivo_url: string;
-}
 
 interface TramiteDetalle {
   id: number;
@@ -17,29 +11,28 @@ interface TramiteDetalle {
   telefono_declarante: string;
   email_declarante: string;
   status: string;
-  documentos: DocumentoRelacionado[]; // Ahora es una lista, como en el backend
+  [key: string]: any;
 }
 
 interface DocumentoInfo {
   id: string;
   nombre: string;
-  obligatorio?: boolean;
 }
 
 const documentosObligatorios: DocumentoInfo[] = [
-  { id: 'ine_fallecido', nombre: 'INE del Fallecido', obligatorio: true },
-  { id: 'ine_declarante', nombre: 'INE del Declarante', obligatorio: true },
-  { id: 'acta_defuncion', nombre: 'Acta de Defunción', obligatorio: true },
-  { id: 'certificado_defuncion', nombre: 'Certificado de Defunción', obligatorio: true },
-  { id: 'orden_inhumacion', nombre: 'Orden de Inhumación', obligatorio: true },
+  { id: 'ine_fallecido', nombre: 'INE del Fallecido' },
+  { id: 'ine_declarante', nombre: 'INE del Declarante' },
+  { id: 'cert_defuncion', nombre: 'Certificado de Defunción' },
+  { id: 'acta_defuncion', nombre: 'Acta de Defunción' },
+  { id: 'orden_inhumacion', nombre: 'Orden de Inhumación' },
 ];
 
 const documentosComplementarios: DocumentoInfo[] = [
-  { id: 'coop_semana_santa', nombre: 'Recibo Coop. Semana Santa' },
+  { id: 'recibo_semana_santa', nombre: 'Recibo Coop. Semana Santa' },
   { id: 'recibo_agua', nombre: 'Recibo de Agua Potable' },
-  { id: 'coop_fiestas_patronales', nombre: 'Recibo Coop. Fiestas Patronales' },
-  { id: 'coop_pirotecnia', nombre: 'Recibo Coop. Pirotecnia' },
-  { id: 'coop_extras  ', nombre: 'Recibo Coop. Extras' },
+  { id: 'recibo_pirotecnia', nombre: 'Recibo Coop. Pirotecnia' },
+  { id: 'recibo_patronales', nombre: 'Recibo Coop. Fiestas Patronales' },
+  { id: 'recibo_extras', nombre: 'Recibo Coop. Extras' },
 ];
 
 const ValidacionDocumentos: React.FC = () => {
@@ -49,134 +42,208 @@ const ValidacionDocumentos: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [urlVisor, setUrlVisor] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchDetalle = async () => {
-      const token = localStorage.getItem('access_token');
-      try {
-        const response = await fetch(`http://localhost:8000/api/admin/tramites/${id}/`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setDatos(data);
-        }
-      } catch (error) {
-        console.error("Error de conexión:", error);
-      } finally {
-        setLoading(false);
+  const token = localStorage.getItem('access_token');
+
+  const obtenerNombresCampos = (idDoc: string) => {
+    let status = `status_${idDoc}`;
+    let obs = `obs_${idDoc}`;
+    if (idDoc === 'recibo_semana_santa') { status = 'status_recibo_ss'; obs = 'obs_recibo_ss'; }
+    else if (idDoc === 'recibo_pirotecnia') { status = 'status_recibo_piro'; obs = 'obs_recibo_piro'; }
+    else if (idDoc === 'recibo_patronales') { status = 'status_recibo_patronales'; obs = 'obs_recibo_patronales'; }
+    else if (idDoc === 'recibo_agua') { status = 'status_recibo_agua'; obs = 'obs_recibo_agua'; }
+    return { status, obs };
+  };
+
+  // 1. CARGA SILENCIOSA: Evita que la pantalla se ponga blanca al validar cada documento
+  const fetchDetalle = async (silencioso = false) => {
+    if (!silencioso) setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8000/api/admin/tramites/${id}/`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setDatos({ ...data });
       }
-    };
-    fetchDetalle();
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      if (!silencioso) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) fetchDetalle();
   }, [id]);
 
-  if (loading) return <div className="p-20 text-center font-bold text-gray-400">Cargando documentación...</div>;
-  if (!datos) return <div className="p-20 text-center font-bold text-red-500">Error: Trámite no encontrado.</div>;
+  // 2. LÓGICA TOGGLE: Si presionas un botón ya activo, se vuelve a 'PENDIENTE'
+  const gestionarValidacion = async (campo: string, nuevoStatus: string, motivo: string = "") => {
+    if (!datos) return;
 
-  // 2. Componente de Fila corregido para buscar en el Array
+    const { status: campoStatus, obs: campoObs } = obtenerNombresCampos(campo);
+    const estadoActual = datos[campoStatus];
+
+    // Si el estado enviado es igual al que ya tiene, regresamos a PENDIENTE (Toggle)
+    const valorFinal = estadoActual === nuevoStatus ? 'PENDIENTE' : nuevoStatus;
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/admin/tramites/${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          [campoStatus]: valorFinal,
+          [campoObs]: valorFinal === 'RECHAZADO' ? motivo : "",
+          status: 'PENDIENTE' // El trámite general se mantiene pendiente hasta finalizar
+        })
+      });
+      if (response.ok) {
+        await fetchDetalle(true); // Refresco sin pantalla de carga
+      };
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  // 3. LIBERACIÓN DE BOTÓN: No bloquea si el ciudadano no subió documentos opcionales
+  const todosAprobados = useMemo(() => {
+    if (!datos) return false;
+    const listaTotal = [...documentosObligatorios, ...documentosComplementarios];
+
+    return listaTotal.every(doc => {
+      const urlDoc = datos[doc.id];
+      const { status: keyStatus } = obtenerNombresCampos(doc.id);
+      const statusDoc = datos[keyStatus];
+
+      // Si no hay archivo (URL vacía), no es necesario validar para habilitar el botón
+      if (!urlDoc) return true;
+
+      // Si hay archivo, forzosamente debe decir 'APROBADO'
+      return statusDoc === 'APROBADO';
+    });
+  }, [datos]);
+
+  if (loading) return <div className="p-20 text-center font-black text-gray-400 uppercase tracking-widest">Cargando...</div>;
+
+  if (!datos) return (
+    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+      <div className="font-black text-red-500 uppercase tracking-widest text-xl">Trámite no encontrado</div>
+      <button onClick={() => fetchDetalle()} className="bg-gray-900 text-white px-6 py-2 rounded-full text-[10px] font-black uppercase">Reintentar Carga</button>
+    </div>
+  );
+
   const FilaDocumento: React.FC<{ doc: DocumentoInfo }> = ({ doc }) => {
-    // Buscamos el documento en la lista que nos mandó Django
-    const docEncontrado = datos.documentos?.find(d => d.tipo_documento === doc.id);
-    const urlDoc = docEncontrado?.archivo_url;
+    const urlDoc = datos[doc.id];
+    const { status: keyStatus } = obtenerNombresCampos(doc.id);
+    const statusDoc = datos[keyStatus];
 
     return (
-      <div className="border-t border-gray-100 py-4 flex justify-between items-center text-xs">
-        <div className="flex-grow">
-          <span className="font-bold text-gray-800">{doc.nombre}</span>
-          {doc.obligatorio && <span className="text-[10px] text-red-600 font-bold ml-1 uppercase">REQ</span>}
-        </div>
-        <div className="flex gap-4 text-gray-700 font-bold">
-          {urlDoc ? (
-            <>
-              <button 
-                onClick={() => setUrlVisor(urlDoc)} 
-                className="text-blue-600 hover:underline"
-              >
-                Ver
-              </button>
-              <button className="hover:text-green-600">Aprobar</button>
-              <button className="hover:text-red-600">Rechazar</button>
-            </>
-          ) : (
-            <span className="text-gray-400 italic font-normal">No cargado</span>
-          )}
+      <div className={`border-t border-gray-100 py-4 transition-all duration-300 ${statusDoc === 'APROBADO' ? 'bg-green-100 border-l-4 border-green-500' :
+          statusDoc === 'RECHAZADO' ? 'bg-red-50 border-l-4 border-red-500' : ''
+        }`}>
+        <div className="flex justify-between items-center px-4">
+          <div className="flex flex-col">
+            <span className="font-black text-[11px] text-gray-800 uppercase">{doc.nombre}</span>
+            {statusDoc === 'APROBADO' && <span className="text-[8px] text-green-600 font-bold uppercase italic">Validado ✅</span>}
+          </div>
+          <div className="flex gap-3 items-center">
+            {urlDoc ? (
+              <>
+                <button onClick={() => setUrlVisor(urlDoc)} className="text-blue-600 font-black text-[10px] uppercase hover:underline">Ver PDF</button>
+                <div className="flex gap-2 bg-white p-1 rounded-full shadow-sm border border-gray-100">
+                  <button
+                    type="button"
+                    onClick={() => gestionarValidacion(doc.id, 'APROBADO')}
+                    className={`p-2 rounded-full transition-all ${statusDoc === 'APROBADO' ? 'bg-green-600 text-white shadow-md' : 'text-gray-300 hover:text-green-500'}`}
+                  >
+                    <CheckCircle size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Si ya está rechazado, el toggle lo pasa a PENDIENTE sin preguntar motivo
+                      if (statusDoc === 'RECHAZADO') {
+                        gestionarValidacion(doc.id, 'RECHAZADO');
+                      } else {
+                        const m = prompt("Motivo del rechazo:");
+                        if (m) gestionarValidacion(doc.id, 'RECHAZADO', m);
+                      }
+                    }}
+                    className={`p-2 rounded-full transition-all ${statusDoc === 'RECHAZADO' ? 'bg-red-600 text-white shadow-md' : 'text-gray-300 hover:text-red-500'}`}
+                  >
+                    <XCircle size={18} />
+                  </button>
+                </div>
+              </>
+            ) : (
+              <span className="text-gray-300 text-[10px] font-black uppercase italic">No cargado</span>
+            )}
+          </div>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
-      <aside className="w-48 bg-white border-r border-gray-300 flex flex-col pt-10">
-        <nav className="flex flex-col space-y-8">
-          <button 
-            onClick={() => navigate('/admin/dashboard')} 
-            className="flex items-center gap-2 text-sm font-bold text-gray-700 py-2 px-6 hover:text-red-600"
-          >
-            <ArrowLeft size={16} /> Volver
-          </button>
-        </nav>
+    <div className="flex min-h-screen bg-gray-50 font-sans text-gray-900">
+      <aside className="w-48 bg-white border-r border-gray-200 flex flex-col pt-10">
+        <button onClick={() => navigate('/admin/dashboard')} className="flex items-center gap-2 text-[10px] font-black text-gray-400 py-2 px-6 hover:text-red-600 tracking-widest uppercase">
+          <ArrowLeft size={14} /> Volver
+        </button>
       </aside>
 
       <main className="flex-1 p-10">
-        <header className="mb-10">
-          <h1 className="text-xl font-bold text-gray-900">Validación de Documentación</h1>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-            Folio: {datos.folio}
-          </p>
+        <header className="mb-10 flex justify-between items-end">
+          <div>
+            <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">Validación de Expediente</h1>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2 underline decoration-red-600 underline-offset-4">FOLIO: {datos.folio}</p>
+          </div>
+          <div className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${datos.status === 'APROBADO' ? 'bg-green-500 text-white' : 'bg-orange-400 text-white'}`}>
+            {datos.status}
+          </div>
         </header>
 
-        {/* Sección de Datos Generales */}
-        <section className="bg-white border border-gray-200 rounded-[2rem] p-8 mb-10 shadow-sm grid grid-cols-1 md:grid-cols-5 gap-6 text-center text-[10px] font-bold">
-          <div><p className="text-gray-400 uppercase mb-1">Fallecido</p><p className="text-gray-800">{datos.nombre_finado}</p></div>
-          <div><p className="text-gray-400 uppercase mb-1">Declarante</p><p className="text-gray-800">{datos.nombre_declarante}</p></div>
-          <div><p className="text-gray-400 uppercase mb-1">Parentesco</p><p className="text-gray-800">{datos.parentesco}</p></div>
-          <div><p className="text-gray-400 uppercase mb-1">Teléfono</p><p className="text-gray-800">{datos.telefono_declarante}</p></div>
-          <div><p className="text-gray-400 uppercase mb-1">Correo</p><p className="text-gray-800">{datos.email_declarante}</p></div>
+        <section className="bg-white border border-gray-100 rounded-[2.5rem] p-8 mb-10 shadow-sm grid grid-cols-1 md:grid-cols-5 gap-6 text-[10px] font-black uppercase italic">
+          <div><p className="text-gray-400 mb-1">Finado</p><p className="text-gray-800">{datos.nombre_finado}</p></div>
+          <div><p className="text-gray-400 mb-1">Declarante</p><p className="text-gray-800">{datos.nombre_declarante}</p></div>
+          <div><p className="text-gray-400 mb-1">Parentesco</p><p className="text-gray-800">{datos.parentesco}</p></div>
+          <div><p className="text-gray-400 mb-1">Teléfono</p><p className="text-gray-800">{datos.telefono_declarante}</p></div>
+          <div><p className="text-gray-400 mb-1">Correo</p><p className="text-gray-800 truncate">{datos.email_declarante}</p></div>
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Visor de Documentos */}
-          <section className="bg-white border border-gray-200 rounded-[2rem] p-8 shadow-sm h-[650px] flex flex-col">
-            <h3 className="text-xs font-bold text-gray-400 uppercase mb-6">Vista Previa</h3>
-            <div className="flex-1 border border-gray-200 rounded-2xl bg-gray-50 overflow-hidden relative">
-              {urlVisor ? (
-                <iframe 
-                  src={`${urlVisor}#toolbar=0`} 
-                  className="w-full h-full border-none" 
-                  title="Visor"
-                />
-              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400">
-                  <FileText size={48} className="mb-4 opacity-20" />
-                  <p className="text-xs font-bold">Seleccione un documento para visualizar</p>
+          <section className="bg-white border border-gray-100 rounded-[3rem] p-6 shadow-sm h-[750px] flex flex-col">
+            <div className="flex-1 border border-gray-50 rounded-[2rem] bg-gray-100 overflow-hidden relative shadow-inner">
+              {urlVisor ? <iframe src={`${urlVisor}#toolbar=0`} className="w-full h-full border-none" title="Visor" /> : (
+                <div className="h-full flex flex-col items-center justify-center text-gray-300">
+                  <FileText size={64} className="mb-4 opacity-10" />
+                  <p className="text-[10px] font-black uppercase tracking-widest">Seleccione un archivo</p>
                 </div>
               )}
             </div>
           </section>
 
-          {/* Listado de Documentos */}
-          <section className="space-y-8">
-            <div className="bg-white border border-gray-200 rounded-[2rem] p-8 shadow-sm">
-              <h3 className="text-xs font-bold text-gray-400 uppercase mb-4">Obligatorios</h3>
+          <section className="space-y-6">
+            <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm">
+              <h3 className="text-[11px] font-black text-gray-900 uppercase mb-6 px-2 border-l-4 border-red-600 pl-4 tracking-tight">Requisitos Obligatorios</h3>
               {documentosObligatorios.map(doc => <FilaDocumento key={doc.id} doc={doc} />)}
             </div>
-
-            <div className="bg-white border border-gray-200 rounded-[2rem] p-8 shadow-sm">
-              <h3 className="text-xs font-bold text-gray-400 uppercase mb-4">Complementarios</h3>
+            <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm">
+              <h3 className="text-[11px] font-black text-gray-900 uppercase mb-6 px-2 border-l-4 border-slate-300 pl-4 tracking-tight">Pagos y Cooperaciones</h3>
               {documentosComplementarios.map(doc => <FilaDocumento key={doc.id} doc={doc} />)}
             </div>
 
-            <div className="bg-white border border-gray-300 rounded-[2rem] p-8 shadow-sm flex flex-col items-center">
-              <span className="mb-4 px-6 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-orange-100 text-orange-600">
-                Estado: {datos.status}
-              </span>
-              <button 
-                disabled={datos.status === 'Aprobado'}
-                className="w-full bg-red-600 text-white font-bold text-xs py-4 rounded-full shadow-lg hover:bg-red-700 transition-all disabled:opacity-50"
-              >
-                Liberar Permiso de Uso de Panteón
-              </button>
-            </div>
+            <button
+              type="button"
+              disabled={!todosAprobados}
+              onClick={() => navigate(`/admin/tramites/${datos.id}/generar-permiso`)}
+              className={`w-full font-black text-[11px] uppercase tracking-[0.2em] py-6 rounded-[2rem] shadow-2xl transition-all flex items-center justify-center gap-2 ${todosAprobados ? 'bg-gray-900 text-white hover:bg-green-600 shadow-green-200' : 'bg-gray-200 text-gray-400 opacity-50 cursor-not-allowed'
+                }`}
+            >
+              Finalizar y Generar Permiso Oficial
+            </button>
           </section>
         </div>
       </main>
