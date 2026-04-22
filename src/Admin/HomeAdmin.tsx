@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import panteon from '../assets/panteon.jpg';
+import NavbarAdmin from '../NavbarAdmin';
 
 const HomeAdmin: React.FC = () => {
   const navigate = useNavigate();
@@ -10,20 +11,14 @@ const HomeAdmin: React.FC = () => {
     const token = localStorage.getItem('access_token');
     if (token) {
       // Si ya hay token, lo mandamos directo al Dashboard
-      navigate('/admin-dashboard');
+      navigate('/admin/dashboard');
     }
   }, [navigate]);
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-white">
-      {/* Header */}
-      <nav className="bg-white py-6 px-10 shadow-sm">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-[#C0392B] font-bold text-xl uppercase tracking-wider">
-            Comunidad de Nativitas
-          </h2>
-        </div>
-      </nav>
+      <NavbarAdmin showAccessButtons={true} />
+
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-10 gap-10">

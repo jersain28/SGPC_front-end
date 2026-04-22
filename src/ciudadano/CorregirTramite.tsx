@@ -70,7 +70,7 @@ const CorregirTramite: React.FC = () => {
 
       if (response.ok) {
         alert("¡Correcciones enviadas! Tu expediente ha regresado a revisión.");
-        navigate('/mis-tramites');
+        navigate('/misTramites');
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.error || 'No se pudo procesar la corrección.'}`);
