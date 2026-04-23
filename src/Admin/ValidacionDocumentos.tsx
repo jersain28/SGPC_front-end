@@ -134,6 +134,32 @@ const ValidacionDocumentos: React.FC = () => {
     </div>
   );
 
+  const finalizarTramite = async () => {
+    if (!window.confirm("¿Desea finalizar el trámite y generar el permiso oficial?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/tramites/${datos.id}/finalizar/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const resultado = await response.json();
+        alert("¡Permiso generado con éxito!");
+        // Opcional: Abrir el PDF en una pestaña nueva
+        window.open(resultado.url, '_blank');
+        navigate('/admin/dashboard');
+      } else {
+        alert("Error al generar el permiso");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const FilaDocumento: React.FC<{ doc: DocumentoInfo }> = ({ doc }) => {
     const urlDoc = datos[doc.id];
     const { status: keyStatus } = obtenerNombresCampos(doc.id);
@@ -141,7 +167,7 @@ const ValidacionDocumentos: React.FC = () => {
 
     return (
       <div className={`border-t border-gray-100 py-4 transition-all duration-300 ${statusDoc === 'APROBADO' ? 'bg-green-100 border-l-4 border-green-500' :
-          statusDoc === 'RECHAZADO' ? 'bg-red-50 border-l-4 border-red-500' : ''
+        statusDoc === 'RECHAZADO' ? 'bg-red-50 border-l-4 border-red-500' : ''
         }`}>
         <div className="flex justify-between items-center px-4">
           <div className="flex flex-col">
@@ -238,9 +264,8 @@ const ValidacionDocumentos: React.FC = () => {
             <button
               type="button"
               disabled={!todosAprobados}
-              onClick={() => navigate(`/admin/tramites/${datos.id}/generar-permiso`)}
-              className={`w-full font-black text-[11px] uppercase tracking-[0.2em] py-6 rounded-[2rem] shadow-2xl transition-all flex items-center justify-center gap-2 ${todosAprobados ? 'bg-gray-900 text-white hover:bg-green-600 shadow-green-200' : 'bg-gray-200 text-gray-400 opacity-50 cursor-not-allowed'
-                }`}
+              onClick={finalizarTramite}
+              className={`w-full font-black text-[11px] ...`}
             >
               Finalizar y Generar Permiso Oficial
             </button>

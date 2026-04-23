@@ -1,14 +1,15 @@
-import { CheckCircle, FileText } from 'lucide-react'; // Asegúrate de tener lucide-react instalado
+import { CheckCircle, Download, ExternalLink, FileText } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// 1. Interfaz actualizada con el nombre real del campo en Django
 interface Tramite {
   id: number;
   folio: string;
   nombre_finado: string;
   status: string;
   creado_el: string;
-  url_permiso_final?: string; // Campo actualizado para Supabase
+  pdf_permiso?: string; // Sincronizado con models.py
   [key: string]: any;
 }
 
@@ -140,7 +141,7 @@ const MisTramites: React.FC = () => {
                           ${necesitaAccion ? 'bg-red-100 text-red-600' :
                             tramite.status === 'APROBADO' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
                           {necesitaAccion ? 'Requiere Corrección' : 
-                           tramite.status === 'PENDIENTE' ? 'En Revisión' : tramite.status}
+                            tramite.status === 'PENDIENTE' ? 'En Revisión' : tramite.status}
                         </span>
                       </div>
                       <p className="text-[11px] text-gray-500 uppercase font-bold tracking-tight">
@@ -170,8 +171,8 @@ const MisTramites: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* SECCIÓN DEL PERMISO FINAL (Solo si ya existe la URL) */}
-                  {tramite.url_permiso_final && (
+                  {/* 2. SECCIÓN DEL PERMISO FINAL ACTUALIZADA */}
+                  {tramite.pdf_permiso && (
                     <div className="mt-8 p-6 bg-gradient-to-br from-gray-900 to-gray-800 rounded-[2rem] border border-gray-700 shadow-2xl relative group overflow-hidden transition-all duration-500">
                       <div className="absolute -right-4 -top-4 text-white/5 rotate-12 group-hover:rotate-0 transition-transform duration-700">
                          <FileText size={100} />
@@ -179,30 +180,34 @@ const MisTramites: React.FC = () => {
 
                       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="flex items-center gap-4">
-                          <div className="bg-yellow-500 p-3 rounded-2xl shadow-lg animate-pulse">
+                          <div className="bg-yellow-500 p-3 rounded-2xl shadow-lg">
                             <CheckCircle className="text-gray-900" size={24} />
                           </div>
                           <div>
                             <h4 className="text-xs font-black text-white uppercase tracking-[0.2em]">Permiso Oficial Liberado</h4>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">El documento ha sido firmado y validado.</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Documento digital validado por el sistema.</p>
                           </div>
                         </div>
 
                         <div className="flex gap-3 w-full md:w-auto">
+                          {/* Botón Ver Online */}
                           <a 
-                            href={tramite.url_permiso_final} 
+                            href={tramite.pdf_permiso} 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="flex-1 md:flex-none bg-gray-700 text-white px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-gray-600 transition-all border border-gray-600 flex items-center justify-center gap-2"
                           >
+                            <ExternalLink size={14} />
                             Ver Online
                           </a>
+                          {/* Botón Descargar */}
                           <a 
-                            href={tramite.url_permiso_final} 
+                            href={tramite.pdf_permiso} 
                             download={`Permiso_${tramite.folio}.pdf`}
                             className="flex-1 md:flex-none bg-white text-gray-900 px-8 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-xl flex items-center justify-center gap-2"
                           >
-                            <span>📥</span> Descargar PDF
+                            <Download size={14} />
+                            Descargar PDF
                           </a>
                         </div>
                       </div>
