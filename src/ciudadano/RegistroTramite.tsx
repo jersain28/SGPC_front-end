@@ -109,7 +109,7 @@ const RegistroTramite: React.FC = () => {
       });
 
       // 3. Envío al Backend
-      const response = await fetch('http://localhost:8000/api/tramites/', {
+      const response = await fetch('${import.meta.env.VITE_API_URL}/api/tramites/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

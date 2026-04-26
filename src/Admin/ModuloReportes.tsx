@@ -22,7 +22,7 @@ const ModuloReportes: React.FC = () => {
     if (estado !== 'Todos') params.append('status', estado);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/reportes/excel/?${params.toString()}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/reportes/excel/?${params.toString()}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

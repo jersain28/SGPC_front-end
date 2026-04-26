@@ -20,7 +20,7 @@ const AdminDashboard: React.FC = () => {
     const fetchSolicitudes = async () => {
       const token = localStorage.getItem('access_token');
       try {
-        const response = await fetch('http://localhost:8000/api/admin/tramites/', {
+        const response = await fetch('${import.meta.env.VITE_API_URL}api/admin/tramites/', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 

@@ -58,7 +58,7 @@ const ValidacionDocumentos: React.FC = () => {
   const fetchDetalle = async (silencioso = false) => {
     if (!silencioso) setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/tramites/${id}/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/tramites/${id}/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -87,7 +87,7 @@ const ValidacionDocumentos: React.FC = () => {
     const valorFinal = estadoActual === nuevoStatus ? 'PENDIENTE' : nuevoStatus;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/tramites/${id}/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/tramites/${id}/`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -138,7 +138,7 @@ const ValidacionDocumentos: React.FC = () => {
     if (!window.confirm("¿Desea finalizar el trámite y generar el permiso oficial?")) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/tramites/${datos.id}/finalizar/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tramites/${datos.id}/finalizar/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

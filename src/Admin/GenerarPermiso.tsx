@@ -10,7 +10,7 @@ const GenerarPermiso: React.FC = () => {
       const token = localStorage.getItem('access_token');
       try {
         // Petición al endpoint de Django definido en tu urls.py
-        const response = await fetch(`http://localhost:8000/api/admin/tramites/${id}/generar-permiso/`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/tramites/${id}/generar-permiso/`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 

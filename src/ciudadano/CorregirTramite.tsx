@@ -25,7 +25,7 @@ const CorregirTramite: React.FC = () => {
   useEffect(() => {
     const fetchTramite = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/mis-tramites/`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mis-tramites/`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
         });
         const data = await response.json();
@@ -59,7 +59,7 @@ const CorregirTramite: React.FC = () => {
     });
 
     try {
-      const response = await fetch(`http://localhost:8000/api/tramites/${id}/corregir/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tramites/${id}/corregir/`, {
         method: 'POST', // Usamos POST para envío de archivos
         headers: { 
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`
