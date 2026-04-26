@@ -44,7 +44,7 @@ const MisTramites: React.FC = () => {
     const fetchTramites = async () => {
       const token = localStorage.getItem('access_token');
       try {
-        const response = await fetch('${import.meta.env.VITE_API_URL}/api/mis-tramites/', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mis-tramites/`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {

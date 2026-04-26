@@ -15,7 +15,7 @@ const Register: React.FC = () => {
     const token = localStorage.getItem('access_token');
 
     try {
-      const response = await fetch('${import.meta.env.VITE_API_URL}/api/crear-trabajador/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/crear-trabajador/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
