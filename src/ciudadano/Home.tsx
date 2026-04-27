@@ -24,7 +24,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           
           <div className="space-y-6">
-            <span className="bg-gray-200 text-gray-700 text-[10px] font-black px-3 py-1 rounded-full uppercase">
+            <span className="bg-gray-200 text-gray-700 text-[10px] font-black px-3 py-1 rounded-full">
               Portal Oficial
             </span>
             

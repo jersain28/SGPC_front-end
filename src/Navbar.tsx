@@ -14,10 +14,10 @@ const Navbar: React.FC<NavbarProps> = ({ showAccessButtons = false, userName }) 
         <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <span className="text-2xl">🏛️</span>
           <div>
-            <h2 className="text-[#C0392B] font-bold text-lg uppercase tracking-wider leading-tight">
+            <h2 className="text-[#C0392B] font-bold text-lg tracking-wider leading-tight">
               Comunidad de Nativitas
             </h2>
-            <p className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">
+            <p className="text-[9px] text-gray-500 font-bold tracking-wider">
               Sistema de Gestión de Panteón
             </p>
           </div>

@@ -82,16 +82,16 @@ const CorregirTramite: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="p-10 text-center uppercase font-black text-[10px]">Cargando expediente...</div>;
+  if (loading) return <div className="p-10 text-center font-black text-[10px]">Cargando expediente...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
-        <button onClick={() => navigate(-1)} className="mb-6 text-[10px] font-black uppercase text-gray-400 hover:text-gray-600 transition-colors">← Volver</button>
+        <button onClick={() => navigate(-1)} className="mb-6 text-[10px] font-black text-gray-400 hover:text-gray-600 transition-colors">← Volver</button>
         
         <div className="bg-white rounded-[2.5rem] shadow-2xl p-10 border border-gray-100">
           <h2 className="text-2xl font-black text-gray-800 tracking-tighter mb-2 italic">CORREGIR EXPEDIENTE</h2>
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-10">Folio: {tramite?.folio}</p>
+          <p className="text-[10px] text-gray-400 font-bold tracking-widest mb-10">Folio: {tramite?.folio}</p>
 
           <div className="space-y-6">
             {estructuraDocumentos.map(doc => {
@@ -100,7 +100,7 @@ const CorregirTramite: React.FC = () => {
 
               return (
                 <div key={doc.id} className="p-6 bg-red-50 rounded-[1.5rem] border border-red-100">
-                  <label className="block text-[11px] font-black text-red-700 uppercase mb-1">{doc.nombre}</label>
+                  <label className="block text-[11px] font-black text-red-700 mb-1">{doc.nombre}</label>
                   <p className="text-[10px] text-red-500 mb-4 bg-white/70 p-3 rounded-xl italic border border-red-100">
                     <span className="font-black not-italic mr-1">MOTIVO DE RECHAZO:</span> 
                     {tramite[doc.obsKey] || 'Documento no válido o ilegible.'}
@@ -113,7 +113,7 @@ const CorregirTramite: React.FC = () => {
                   />
                   
                   {nuevosArchivos[doc.id] && (
-                    <p className="mt-3 text-[9px] font-black text-green-600 uppercase flex items-center">
+                    <p className="mt-3 text-[9px] font-black text-green-600 flex items-center">
                       <span className="mr-1">✓</span> {nuevosArchivos[doc.id].name} listo para subir
                     </p>
                   )}
@@ -125,7 +125,7 @@ const CorregirTramite: React.FC = () => {
           <button 
             onClick={handleSubmit}
             disabled={enviando}
-            className={`w-full mt-10 text-white py-5 rounded-[1.5rem] font-black uppercase text-[11px] tracking-widest transition-all shadow-xl ${
+            className={`w-full mt-10 text-white py-5 rounded-[1.5rem] font-black text-[11px] tracking-widest transition-all shadow-xl ${
               enviando ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-900 hover:bg-black hover:scale-[1.02]'
             }`}
           >

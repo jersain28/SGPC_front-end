@@ -63,8 +63,8 @@ const ModuloReportes: React.FC = () => {
       <main className="flex-1 p-8">
         <header className="flex justify-between items-start mb-12">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Panel Administrativo</h1>
-            <p className="text-[10px] font-bold text-gray-600 uppercase">Comunidad Nativitas</p>
+            <h1 className="text-2xl font-black text-gray-900 tracking-tighter">Panel Administrativo</h1>
+            <p className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Comunidad Nativitas</p>
           </div>
           <button onClick={() => { localStorage.clear(); navigate('/admin'); }} className="bg-gray-100 text-red-600 border border-gray-200 px-6 py-2 rounded-full text-xs font-bold hover:bg-gray-200">
             Cerrar Sesión

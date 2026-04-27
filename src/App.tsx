@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 
-import Confirmacion from './ciudadano/Confirmacion';
 import Home from './ciudadano/Home';
 
 import RegistroTramite from './ciudadano/RegistroTramite';
@@ -35,9 +34,6 @@ function App() {
           <> <RegistroTramite /> </>
         } />
 
-        <Route path="/confirmacion" element={
-          <> <Confirmacion /> </>
-        } />
 
         <Route path="/login" element={
          <> <LoginUser /> </>

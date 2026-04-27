@@ -1,6 +1,7 @@
 import { jwtDecode } from 'jwt-decode'; // Importante: npm install jwt-decode
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Para la navegación profesional
+import NavbarAdmin from '../NavbarAdmin';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -52,13 +53,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      <nav className="bg-white py-6 px-10 shadow-sm">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-[#C0392B] font-bold text-xl uppercase tracking-wider">
-            Comunidad de Nativitas
-          </h2>
-        </div>
-      </nav>
+      <NavbarAdmin showAccessButtons={false} />
 
       <main className="flex-grow flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md bg-white border border-gray-400 p-8 shadow-sm">

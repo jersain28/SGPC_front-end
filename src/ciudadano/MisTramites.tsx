@@ -79,33 +79,33 @@ const MisTramites: React.FC = () => {
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
           <div className="bg-white/20 p-2 rounded-lg">🏛️</div>
           <div>
-            <h1 className="font-bold text-sm leading-tight uppercase tracking-tight">Comunidad de Nativitas</h1>
-            <p className="text-[10px] opacity-80 uppercase tracking-tighter">Gestión de Panteón</p>
+            <h1 className="font-bold text-sm leading-tight tracking-tight">Comunidad de Nativitas</h1>
+            <p className="text-[10px] opacity-80 tracking-tighter">Gestión de Panteón</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 bg-white/10 pl-4 pr-2 py-1 rounded-full border border-white/20">
             <div className="text-right">
               <p className="text-[11px] font-black leading-none">{userName}</p>
-              <p className="text-[9px] opacity-70 uppercase font-medium mt-1">Portal Ciudadano</p>
+              <p className="text-[9px] opacity-70 font-medium mt-1">Portal Ciudadano</p>
             </div>
             <div className="w-8 h-8 bg-[#C0392B] rounded-full flex items-center justify-center text-xs font-black border border-white/40">
               {initials}
             </div>
           </div>
-          <button onClick={handleLogout} className="bg-white text-[#C0392B] px-3 py-2 rounded-xl font-black text-[9px] uppercase hover:bg-gray-100 transition-all shadow-lg">
+          <button onClick={handleLogout} className="bg-white text-[#C0392B] px-3 py-2 rounded-xl font-black text-[9px] hover:bg-gray-100 transition-all shadow-lg">
             Cerrar Sesión
           </button>
         </div>
       </nav>
 
       <div className="bg-white px-8 py-2 border-b flex justify-between items-center sticky top-0 z-20 shadow-sm">
-        <div className="flex gap-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+        <div className="flex gap-4 text-[10px] font-bold text-gray-400 tracking-widest">
           <span className="text-[#C0392B] border-b-2 border-[#C0392B] pb-1">Mis Trámites</span>
         </div>
         <button
           onClick={() => navigate('/registroTramite')}
-          className="bg-white border border-[#C0392B] text-[#C0392B] px-4 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-[#C0392B] hover:text-white transition-all"
+          className="bg-white border border-[#C0392B] text-[#C0392B] px-4 py-1.5 rounded-lg text-[10px] font-black hover:bg-[#C0392B] hover:text-white transition-all"
         >
           + Nuevo Trámite
         </button>
@@ -114,7 +114,7 @@ const MisTramites: React.FC = () => {
       <main className="p-8 max-w-5xl mx-auto w-full space-y-8">
         {tramites.length === 0 ? (
           <div className="bg-white p-20 rounded-[2.5rem] border-2 border-dashed border-gray-200 text-center">
-            <p className="text-gray-400 font-bold uppercase text-[10px] tracking-[0.2em]">No tienes trámites registrados</p>
+            <p className="text-gray-400 font-bold text-[10px] tracking-[0.2em]">No tienes trámites registrados</p>
           </div>
         ) : (
           tramites.map((tramite) => {
@@ -127,7 +127,7 @@ const MisTramites: React.FC = () => {
             return (
               <div key={tramite.id} className="bg-white rounded-[2.5rem] shadow-xl border border-gray-200 overflow-hidden">
                 {necesitaAccion && (
-                  <div className="bg-[#C0392B] text-white px-8 py-3 text-[10px] font-black uppercase tracking-widest flex items-center gap-3">
+                  <div className="bg-[#C0392B] text-white px-8 py-3 text-[10px] font-black tracking-widest flex items-center gap-3">
                     <span className="animate-bounce">⚠️</span> Acción Requerida: Se han rechazado documentos. Por favor, corrígelos.
                   </div>
                 )}
@@ -137,14 +137,14 @@ const MisTramites: React.FC = () => {
                     <div>
                       <div className="flex items-center gap-3 mb-1">
                         <h3 className="font-black text-2xl text-gray-800 tracking-tighter">{tramite.folio}</h3>
-                        <span className={`text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-widest 
+                        <span className={`text-[9px] px-3 py-1 rounded-full font-black tracking-widest 
                           ${necesitaAccion ? 'bg-red-100 text-red-600' :
                             tramite.status === 'APROBADO' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
                           {necesitaAccion ? 'Requiere Corrección' : 
                             tramite.status === 'PENDIENTE' ? 'En Revisión' : tramite.status}
                         </span>
                       </div>
-                      <p className="text-[11px] text-gray-500 uppercase font-bold tracking-tight">
+                      <p className="text-[11px] text-gray-500 font-bold tracking-tight">
                         Fallecido: <span className="text-gray-900">{tramite.nombre_finado}</span>
                         <span className="mx-3 text-gray-200">|</span>
                         Fecha: {new Date(tramite.creado_el).toLocaleDateString()}
@@ -184,7 +184,7 @@ const MisTramites: React.FC = () => {
                             <CheckCircle className="text-gray-900" size={24} />
                           </div>
                           <div>
-                            <h4 className="text-xs font-black text-white uppercase tracking-[0.2em]">Permiso Oficial Liberado</h4>
+                            <h4 className="text-xs font-black text-white tracking-[0.2em]">Permiso Oficial Liberado</h4>
                             <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Documento digital validado por el sistema.</p>
                           </div>
                         </div>
@@ -195,7 +195,7 @@ const MisTramites: React.FC = () => {
                             href={tramite.pdf_permiso} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex-1 md:flex-none bg-gray-700 text-white px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-gray-600 transition-all border border-gray-600 flex items-center justify-center gap-2"
+                            className="flex-1 md:flex-none bg-gray-700 text-white px-6 py-3 rounded-xl font-black text-[9px] tracking-widest hover:bg-gray-600 transition-all border border-gray-600 flex items-center justify-center gap-2"
                           >
                             <ExternalLink size={14} />
                             Ver Online
@@ -204,7 +204,7 @@ const MisTramites: React.FC = () => {
                           <a 
                             href={tramite.pdf_permiso} 
                             download={`Permiso_${tramite.folio}.pdf`}
-                            className="flex-1 md:flex-none bg-white text-gray-900 px-8 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-xl flex items-center justify-center gap-2"
+                            className="flex-1 md:flex-none bg-white text-gray-900 px-8 py-3 rounded-xl font-black text-[9px] tracking-widest hover:bg-yellow-500 transition-all shadow-xl flex items-center justify-center gap-2"
                           >
                             <Download size={14} />
                             Descargar PDF
@@ -217,7 +217,7 @@ const MisTramites: React.FC = () => {
                   {necesitaAccion && (
                     <button
                       onClick={() => navigate(`/corregir-tramite/${tramite.id}`)}
-                      className="w-full mt-8 bg-[#C0392B] text-white font-black text-xs uppercase tracking-widest py-5 rounded-[1.5rem] shadow-2xl hover:bg-red-800 transition-all active:scale-95 flex items-center justify-center gap-3"
+                      className="w-full mt-8 bg-[#C0392B] text-white font-black text-xs tracking-widest py-5 rounded-[1.5rem] shadow-2xl hover:bg-red-800 transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
                       <span>📤</span> Abrir editor de correcciones
                     </button>
@@ -242,11 +242,11 @@ const DocRow = ({ name, status, errorMsg }: any) => (
             status === 'NO_DISPONIBLE' ? 'bg-gray-50' : 'bg-gray-100'}`}>
           {status === 'APROBADO' ? '✅' : status === 'RECHAZADO' ? '❌' : '📄'}
         </div>
-        <span className={`text-[11px] font-black uppercase tracking-tight ${status === 'NO_DISPONIBLE' ? 'text-gray-300' : 'text-gray-700'}`}>
+        <span className={`text-[11px] font-black tracking-tight ${status === 'NO_DISPONIBLE' ? 'text-gray-300' : 'text-gray-700'}`}>
           {name}
         </span>
       </div>
-      <span className={`text-[8px] font-black px-3 py-1 rounded-lg border uppercase tracking-[0.1em]
+      <span className={`text-[8px] font-black px-3 py-1 rounded-lg border tracking-[0.1em]
         ${status === 'APROBADO' ? 'bg-green-100 text-green-700 border-green-200' :
           status === 'RECHAZADO' ? 'bg-red-100 text-red-700 border-red-200' : 
           'bg-gray-100 text-gray-400 border-gray-200'}`}>
@@ -257,7 +257,7 @@ const DocRow = ({ name, status, errorMsg }: any) => (
     {status === 'RECHAZADO' && errorMsg && (
       <div className="ml-12 mt-3 bg-white p-3 rounded-xl border border-red-100 shadow-sm">
         <p className="text-[10px] text-red-800 leading-snug">
-          <span className="font-black uppercase text-[8px] mr-2 text-red-600 underline">Nota del Admin:</span>
+          <span className="font-black text-[8px] mr-2 text-red-600 underline">Nota del Admin:</span>
           {errorMsg}
         </p>
       </div>

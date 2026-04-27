@@ -59,59 +59,57 @@ const LoginUser: React.FC = () => {
       <Navbar showAccessButtons={false} />
 
       <main className="flex-grow flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white border border-gray-400 p-8 shadow-sm rounded-lg">
-          <h3 className="text-center text-xl font-bold text-gray-800 mb-8 uppercase tracking-tight">
-            Portal Ciudadano - Nativitas
+        <div className="w-full max-w-md bg-white border border-gray-400 p-8 shadow-sm">
+          <h3 className="text-center text-xl font-bold text-gray-800 mb-8">
+            Portal Ciudadano
           </h3>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-8">
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-gray-600 uppercase">
+              <label className="block text-gray-800 font-semibold">
                 Nombre de Usuario
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full border-b border-gray-300 py-2 focus:border-[#C0392B] outline-none transition-all"
-                placeholder="Ej. jmartinez"
+                className="w-full border border-gray-400 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-panteon-red/30 transition-all"
                 required
                 disabled={loading}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-gray-600 uppercase">
+              <label className="block text-gray-800 font-semibold">
                 Contraseña
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border-b border-gray-300 py-2 focus:border-[#C0392B] outline-none transition-all"
+                className="w-full border border-gray-400 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-panteon-red/30 transition-all"
                 required
                 disabled={loading}
               />
             </div>
 
-            <div className="flex justify-center pt-6">
+            <div className="flex justify-center pt-4">
               <button
                 type="submit"
                 disabled={loading}
-                className={`bg-[#C0392B] hover:bg-[#A93226] text-white font-bold py-3 px-10 rounded-xl text-sm uppercase tracking-widest transition-all shadow-md ${loading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                className={`bg-[#C0392B] hover:bg-[#A93226] text-white font-bold py-4 px-12 rounded-xl text-lg transition-all transform active:scale-95 shadow-lg ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {loading ? 'Validando...' : 'Entrar al Sistema'}
+                {loading ? 'Verificando...' : 'Iniciar Sesión'}
               </button>
             </div>
           </form>
         </div>
 
-        <button
-          className="mt-8 text-gray-500 hover:text-gray-800 text-xs font-bold uppercase tracking-widest transition-all"
-          onClick={() => navigate('/')}
+        <button 
+          className="mt-8 bg-gray-500 hover:bg-gray-600 text-white text-sm py-2 px-8 rounded-full transition-all shadow-sm"
+          onClick={() => navigate('/admin')} // Redirigir al Home público
         >
-          ← Regresar al Inicio
+          Regresar al Inicio
         </button>
       </main>
     </div>
