@@ -12,13 +12,13 @@ const RegisterUser: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Configuración visual profesional heredada del SGPC
+  // Mantenemos la configuración de SweetAlert2 con el estilo institucional
   const swalConfig = {
     customClass: {
-      confirmButton: 'bg-[#C0392B] text-white font-black px-10 py-4 rounded-xl uppercase text-[10px] tracking-widest hover:bg-[#A93226] transition-all mx-6',
-      popup: 'rounded-[2.5rem] p-10 shadow-2xl border border-gray-100',
-      title: 'text-2xl font-black text-gray-900 tracking-tighter',
-      htmlContainer: 'text-gray-500 font-medium text-sm',
+      confirmButton: 'bg-[#C0392B] text-white font-bold py-3 px-8 rounded-xl transition-all mx-2',
+      popup: 'rounded-2xl border border-gray-400 shadow-lg',
+      title: 'text-xl font-bold text-gray-800',
+      htmlContainer: 'text-gray-600'
     },
     buttonsStyling: false
   };
@@ -37,30 +37,31 @@ const RegisterUser: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Éxito con diseño profesional
+        // Alerta profesional de éxito
         await MySwal.fire({
-          title: '¡Registro Exitoso!',
-          text: 'La cuenta ha sido creada correctamente en el sistema.',
+          title: '¡Éxito!',
+          text: 'Usuario creado correctamente.',
           icon: 'success',
-          confirmButtonText: 'Ir al Inicio de Sesión',
+          confirmButtonText: 'Ir al Login',
           ...swalConfig
         });
         navigate('/login');
       } else {
-        // Error controlado desde Django
+        // Alerta profesional de error
         MySwal.fire({
-          title: 'No se pudo registrar',
-          text: data.message || 'Verifique los datos e intente nuevamente.',
+          title: 'Error',
+          text: data.message || 'No se pudo crear el usuario',
           icon: 'error',
-          confirmButtonText: 'Entendido',
+          confirmButtonText: 'Reintentar',
           ...swalConfig
         });
       }
     } catch (error) {
       MySwal.fire({
-        title: 'Error de Conexión',
-        text: 'No se pudo establecer contacto con el servidor del SGPC.',
+        title: 'Error de conexión',
+        text: 'Hubo un problema con el servidor.',
         icon: 'error',
+        confirmButtonText: 'Entendido',
         ...swalConfig
       });
     } finally {
@@ -73,70 +74,60 @@ const RegisterUser: React.FC = () => {
       <Navbar showAccessButtons={false} />
       
       <main className="flex-grow flex flex-col items-center justify-center p-4">
-        {/* Card de Registro con estilo refinado */}
-        <div className="w-full max-w-md bg-white border border-gray-100 p-10 rounded-[2.5rem] shadow-xl">
-          <header className="mb-8 text-center">
-            <span className="text-3xl block mb-2">🏛️</span>
-            <h3 className="text-2xl font-black text-gray-900 tracking-tighter">
-              Crear Usuario
-            </h3>
-            <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase mt-1">
-              Registro Administrativo
-            </p>
-          </header>
+        {/* Tu diseño original intacto */}
+        <div className="w-full max-w-md bg-white border border-gray-400 p-8 shadow-sm">
+          <h3 className="text-center text-xl font-bold text-gray-800 mb-8">
+            Crear Usuario
+          </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-2">
-              <label className="block text-[11px] font-black text-gray-400 uppercase tracking-wider ml-1">
+              <label className="block text-gray-800 font-semibold">
                 Nombre de Usuario
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-[#C0392B]/20 transition-all font-medium text-sm"
-                placeholder="Ej. admin_nativitas"
+                className="w-full border border-gray-400 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#C0392B]/30"
                 required
                 disabled={loading}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-[11px] font-black text-gray-400 uppercase tracking-wider ml-1">
+              <label className="block text-gray-800 font-semibold">
                 Contraseña
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-[#C0392B]/20 transition-all font-medium text-sm"
-                placeholder="••••••••"
+                className="w-full border border-gray-400 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#C0392B]/30"
                 required
                 disabled={loading}
               />
             </div>
 
-            <div className="pt-4">
+            <div className="flex justify-center pt-4">
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full font-black text-[11px] uppercase tracking-[0.2em] py-5 rounded-2xl transition-all duration-300 shadow-lg ${
-                  loading 
-                    ? 'bg-gray-100 text-gray-400' 
-                    : 'bg-[#C0392B] text-white hover:bg-[#A93226] hover:-translate-y-1 active:scale-95 shadow-[0_15px_30px_rgba(192,57,43,0.2)]'
+                className={`bg-[#C0392B] hover:bg-[#A93226] text-white font-bold py-4 px-12 rounded-xl text-lg transition-all transform active:scale-95 shadow-lg ${
+                  loading ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                {loading ? 'Procesando...' : 'Finalizar Registro'}
+                {loading ? 'Creando...' : 'Crear Usuario'}
               </button>
             </div>
           </form>
         </div>
 
         <button 
-          className="mt-8 text-[10px] font-black text-gray-400 hover:text-red-600 uppercase tracking-widest transition-colors flex items-center gap-2"
-          onClick={() => navigate('/')}
+          className="mt-8 bg-gray-600 hover:bg-gray-700 text-white text-sm py-2 px-8 rounded-full transition-all shadow-sm"
+          onClick={() => navigate('/login')}
         >
-          ← Volver al inicio
+          Regresar al Inicio
         </button>
       </main>
     </div>
