@@ -107,7 +107,7 @@ const LoginUser: React.FC = () => {
 
         <button 
           className="mt-8 bg-gray-500 hover:bg-gray-600 text-white text-sm py-2 px-8 rounded-full transition-all shadow-sm"
-          onClick={() => navigate('/admin')} // Redirigir al Home público
+          onClick={() => navigate('/')} // Redirigir al Home público
         >
           Regresar al Inicio
         </button>
